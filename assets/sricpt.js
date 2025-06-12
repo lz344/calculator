@@ -101,6 +101,20 @@ function addDotOrNot(visorValue, btnValue) {
   }
 }
 
+function getLastOperatorIndex(expression) {
+  const operators = ["+", "-", "*", "/"];
+
+  for (let i = expression.length - 1; i >= 0; i--) {
+    if (
+      operators.includes(expression[i]) &&
+      !isNaN(Number(expression[i - 1]))
+    ) {
+      return i;
+    }
+  }
+  return -1;
+}
+
 function startCalculator() {
   const visor = document.querySelector("#result");
   const calcButtons = document.querySelectorAll("button");
@@ -109,6 +123,36 @@ function startCalculator() {
   calcButtons.forEach((button) => {
     button.addEventListener("click", (e) => {
       const btnValue = e.target.textContent;
+
+      if (btnValue === "+/-") {
+        if (visor.value === "") {
+          return;
+        }
+
+        let lastIndex = getLastOperatorIndex(visor.value);
+
+        if (lastIndex === -1) {
+          if (visor.value.startsWith("-")) {
+            visor.value = visor.value.slice(1);
+            return;
+          } else {
+            visor.value = "-" + visor.value;
+            return;
+          }
+        } else {
+          if (visor.value[lastIndex + 1] === "-") {
+            const arrayExpression = [...visor.value];
+            arrayExpression.splice(lastIndex + 1, 1);
+            visor.value = arrayExpression.join("");
+            return;
+          } else {
+            const arrayExpression = [...visor.value];
+            arrayExpression.splice(lastIndex + 1, 0, "-");
+            visor.value = arrayExpression.join("");
+            return;
+          }
+        }
+      }
 
       if (addDotOrNot(visor.value, btnValue)) {
         return;
