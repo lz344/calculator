@@ -36,31 +36,66 @@ function equalOrOperatorAfterNumber(visor, btnValue, operators) {
 function doesSimpleMath(visor) {
   let array = visor.split("");
 
-  const operatorIndex = getOperatorIndex(visor);
+  const operatorIndex = getLastOperatorIndex(visor);
 
-  let num1 = Number(array.slice(0, operatorIndex).join(""));
-  let num2 = Number(array.slice(operatorIndex + 1).join(""));
+  const left = array.slice(0, operatorIndex).join("");
+  const right = array.slice(operatorIndex + 1).join("");
 
-  const operator = array[operatorIndex];
+  const leftIsNegative = left.startsWith("-");
+  const rightIsNegative = right.startsWith("-");
 
-  if (operator === "+") return num1 + num2;
-  else if (operator === "-") return num1 - num2;
-  else if (operator === "*") return num1 * num2;
-  else if (operator === "/") {
-    if (num1 === 0 && num2 === 0) {
-      alert("Erro de divisão: 0 não pode ser divido por ele mesmo!");
-      return "";
-    } else if (num2 === 0) {
-      alert("Erro de divisão: Não é possivel dividir por 0!");
-      return "";
-    } else {
-      return num1 / num2;
+  if (leftIsNegative || rightIsNegative) {
+    const num1 = Number(left);
+    const num2 = Number(right);
+
+    const operator = array[operatorIndex];
+
+    if (operator === "-") return num1 - num2;
+    else if (operator === "+") return num1 + num2;
+    else if (operator === "*") return num1 * num2;
+    else if (operator === "/") {
+      if (
+        (num1 === 0 && num2 === 0) ||
+        (num1 === -0 && num2 === 0) ||
+        (num1 === 0 && num2 === -0) ||
+        (num1 === -0 && num2 === -0)
+      ) {
+        alert("Erro de divisão: 0 não pode ser dividido por ele mesmo!");
+        return "";
+      } else if (num2 === 0 || num2 === -0) {
+        alert("Erro de divisão: Não é possivel dividir por 0!");
+        return "";
+      } else {
+        return num1 / num2;
+      }
+    }
+  } else {
+    const operatorIndex = getOperatorIndex(visor);
+
+    let num1 = Number(array.slice(0, operatorIndex).join(""));
+    let num2 = Number(array.slice(operatorIndex + 1).join(""));
+
+    const operator = array[operatorIndex];
+
+    if (operator === "+") return num1 + num2;
+    else if (operator === "-") return num1 - num2;
+    else if (operator === "*") return num1 * num2;
+    else if (operator === "/") {
+      if (num1 === 0 && num2 === 0) {
+        alert("Erro de divisão: 0 não pode ser divido por ele mesmo!");
+        return "";
+      } else if (num2 === 0) {
+        alert("Erro de divisão: Não é possivel dividir por 0!");
+        return "";
+      } else {
+        return num1 / num2;
+      }
     }
   }
 }
 
 function expressionHasOperator(visor) {
-  const operatorIndex = getOperatorIndex(visor);
+  const operatorIndex = getLastOperatorIndex(visor);
 
   if (operatorIndex === -1) {
     return false;
