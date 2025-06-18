@@ -33,7 +33,7 @@ function equalOrOperatorAfterNumber(visor, btnValue, operators) {
   return false;
 }
 
-function doesSimpleMath(visor) {
+function parseAndCalculate(visor) {
   let array = visor.split("");
 
   const operatorIndex = getLastOperatorIndex(visor);
@@ -41,55 +41,32 @@ function doesSimpleMath(visor) {
   const left = array.slice(0, operatorIndex).join("");
   const right = array.slice(operatorIndex + 1).join("");
 
-  const leftIsNegative = left.startsWith("-");
-  const rightIsNegative = right.startsWith("-");
+  const num1 = Number(left);
+  const num2 = Number(right);
 
-  if (leftIsNegative || rightIsNegative) {
-    const num1 = Number(left);
-    const num2 = Number(right);
+  const operator = array[operatorIndex];
 
-    const operator = array[operatorIndex];
+  return calculate(num1, num2, operator);
+}
 
-    if (operator === "-") return num1 - num2;
-    else if (operator === "+") return num1 + num2;
-    else if (operator === "*") return num1 * num2;
-    else if (operator === "/") {
-      if (
-        (num1 === 0 && num2 === 0) ||
-        (num1 === -0 && num2 === 0) ||
-        (num1 === 0 && num2 === -0) ||
-        (num1 === -0 && num2 === -0)
-      ) {
-        alert("Erro de divisão: 0 não pode ser dividido por ele mesmo!");
-        return "";
-      } else if (num2 === 0 || num2 === -0) {
-        alert("Erro de divisão: Não é possivel dividir por 0!");
-        return "";
-      } else {
-        return num1 / num2;
-      }
-    }
-  } else {
-    const operatorIndex = getOperatorIndex(visor);
-
-    let num1 = Number(array.slice(0, operatorIndex).join(""));
-    let num2 = Number(array.slice(operatorIndex + 1).join(""));
-
-    const operator = array[operatorIndex];
-
-    if (operator === "+") return num1 + num2;
-    else if (operator === "-") return num1 - num2;
-    else if (operator === "*") return num1 * num2;
-    else if (operator === "/") {
-      if (num1 === 0 && num2 === 0) {
-        alert("Erro de divisão: 0 não pode ser divido por ele mesmo!");
-        return "";
-      } else if (num2 === 0) {
-        alert("Erro de divisão: Não é possivel dividir por 0!");
-        return "";
-      } else {
-        return num1 / num2;
-      }
+function calculate(num1, num2, operator) {
+  if (operator === "-") return num1 - num2;
+  else if (operator === "+") return num1 + num2;
+  else if (operator === "*") return num1 * num2;
+  else if (operator === "/") {
+    if (
+      (num1 === 0 && num2 === 0) ||
+      (num1 === -0 && num2 === 0) ||
+      (num1 === 0 && num2 === -0) ||
+      (num1 === -0 && num2 === -0)
+    ) {
+      alert("Erro de divisão: 0 não pode ser dividido por ele mesmo!");
+      return "";
+    } else if (num2 === 0 || num2 === -0) {
+      alert("Erro de divisão: Não é possivel dividir por 0!");
+      return "";
+    } else {
+      return num1 / num2;
     }
   }
 }
@@ -204,7 +181,7 @@ function startCalculator() {
       if (expressionHasOperator(visor.value)) {
         const operators = ["+", "-", "*", "/"];
         if (operators.includes(btnValue)) {
-          let calc = doesSimpleMath(visor.value);
+          let calc = parseAndCalculate(visor.value);
           visor.value = "";
           visor.value += calc;
         }
@@ -218,7 +195,7 @@ function startCalculator() {
         ) {
           return;
         } else {
-          let calc = doesSimpleMath(visor.value);
+          let calc = parseAndCalculate(visor.value);
           visor.value = "";
           visor.value += calc;
           return;
