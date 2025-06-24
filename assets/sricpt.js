@@ -127,6 +127,24 @@ function getLastOperatorIndex(expression) {
   return -1;
 }
 
+function calculatePercentage(visorValue) {
+  let array = visorValue.split("");
+
+  const operatorIndex = getLastOperatorIndex(visorValue);
+
+  const firstNumber = Number(array.slice(0, operatorIndex).join(""));
+  const secondNumber = Number(array.slice(operatorIndex + 1).join(""));
+  let calc;
+
+  if (array[operatorIndex] === "+" || array[operatorIndex] === "-") {
+    calc = (firstNumber / 100) * secondNumber;
+  } else {
+    calc = secondNumber / 100;
+  }
+
+  return calculate(firstNumber, calc, array[operatorIndex]);
+}
+
 function startCalculator() {
   const visor = document.querySelector("#result");
   const calcButtons = document.querySelectorAll("button");
@@ -135,6 +153,18 @@ function startCalculator() {
   calcButtons.forEach((button) => {
     button.addEventListener("click", (e) => {
       const btnValue = e.target.textContent;
+
+      if (btnValue === "%") {
+        if (visor.value === "") {
+          return;
+        }
+        if (!expressionHasOperator(visor.value)) {
+          visor.value = visor.value / 100;
+        } else {
+          const expression = calculatePercentage(visor.value);
+          visor.value = expression;
+        }
+      }
 
       if (btnValue === "+/-") {
         if (visor.value === "") {
