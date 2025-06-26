@@ -145,14 +145,26 @@ function calculatePercentage(visorValue) {
   return calculate(firstNumber, calc, array[operatorIndex]);
 }
 
+function shouldOverwriteVisor(visor, btnValue, overwriteFlag) {
+  const lastChar = visor[visor.length - 1];
+  return overwriteFlag && !isNaN(lastChar) && !isNaN(btnValue);
+}
+
 function startCalculator() {
   const visor = document.querySelector("#result");
   const calcButtons = document.querySelectorAll("button");
   const operators = ["+", "-", "*", "/", "."];
+  let overwriteOnNextInput = false;
 
   calcButtons.forEach((button) => {
     button.addEventListener("click", (e) => {
       const btnValue = e.target.textContent;
+
+      if (shouldOverwriteVisor(visor.value, btnValue, overwriteOnNextInput)) {
+        visor.value = btnValue;
+        overwriteOnNextInput = false;
+        return;
+      }
 
       if (btnValue === "%") {
         if (visor.value === "") {
@@ -164,6 +176,7 @@ function startCalculator() {
           const expression = calculatePercentage(visor.value);
           visor.value = expression;
         }
+        return;
       }
 
       if (btnValue === "+/-") {
@@ -228,6 +241,7 @@ function startCalculator() {
           let calc = parseAndCalculate(visor.value);
           visor.value = "";
           visor.value += calc;
+          overwriteOnNextInput = true;
           return;
         }
       }
