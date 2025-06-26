@@ -150,6 +150,10 @@ function shouldOverwriteVisor(visor, btnValue, overwriteFlag) {
   return overwriteFlag && !isNaN(lastChar) && !isNaN(btnValue);
 }
 
+function clearVisor(visor) {
+  visor.value = "";
+}
+
 function startCalculator() {
   const visor = document.querySelector("#result");
   const calcButtons = document.querySelectorAll("button");
@@ -159,6 +163,11 @@ function startCalculator() {
   calcButtons.forEach((button) => {
     button.addEventListener("click", (e) => {
       const btnValue = e.target.textContent;
+
+      if (btnValue === "AC") {
+        clearVisor(visor);
+        return;
+      }
 
       if (shouldOverwriteVisor(visor.value, btnValue, overwriteOnNextInput)) {
         visor.value = btnValue;
